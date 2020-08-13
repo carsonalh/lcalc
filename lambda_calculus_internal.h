@@ -3,6 +3,11 @@
 
 #include "lambda_calculus.h"
 
+#define LC_TOKEN_CHAR_OPEN_PAREN    '('
+#define LC_TOKEN_CHAR_CLOSE_PAREN   ')'
+#define LC_TOKEN_CHAR_LAMBDA        '\\'
+#define LC_TOKEN_CHAR_DOT           '.'
+
 #include <rigid.h>
 
 struct lc_TokenList {

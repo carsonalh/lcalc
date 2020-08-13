@@ -8,6 +8,7 @@ add_library ("${PROJECT_NAME}"
             "lambda_calculus.h"
             "lambda_calculus_internal.h"
             "src/token.c"
+            "src/tree.c"
 )
 target_include_directories ("${PROJECT_NAME}"
         PUBLIC
@@ -26,16 +27,24 @@ install (EXPORT "${PROJECT_NAME}Config"
         DESTINATION "lib/${PROJECT_NAME}_${${PROJECT_NAME}_VERSION}"
 )
 
-enable_testing ()
-
 find_package ("pest" REQUIRED)
 
-add_executable(${PROJECT_NAME}_token_test "tests/token_test.c")
-target_link_libraries (${PROJECT_NAME}_token_test
+enable_testing ()
+
+add_executable("${PROJECT_NAME}_token_test" "tests/token_test.c")
+target_link_libraries ("${PROJECT_NAME}_token_test"
         PRIVATE
             "${PROJECT_NAME}"
             "rigid"
             "pest"
 )
-add_test (TEST ${PROJECT_NAME}_token_test COMMAND ${PROJECT_NAME}_token_test)
+add_test (NAME "${PROJECT_NAME}_token_test" COMMAND "${PROJECT_NAME}_token_test")
+
+add_executable ("${PROJECT_NAME}_tree_test" "tests/tree_test.c")
+target_link_libraries ("${PROJECT_NAME}_tree_test" 
+        PRIVATE
+            "${PROJECT_NAME}"
+            "pest"
+)
+add_test (NAME "${PROJECT_NAME}_tree_test" COMMAND "${PROJECT_NAME}_tree_test")
 

@@ -35,59 +35,54 @@ void lc_TokenList_Destroy(struct lc_TokenList *list)
 
 static struct lc_Token _lc_TokenizeSingleCharacter(char c)
 {
-    struct lc_Token result;
+    struct lc_Token token;
 
-    if (c == '(') {
-        result.type = LC_OPEN_PAREN;
+    if (c == LC_TOKEN_CHAR_OPEN_PAREN) {
+        token.type = LC_TOKEN_OPEN_PAREN;
     }
-    else if (c == ')') {
-        result.type = LC_CLOSE_PAREN;
+    else if (c == LC_TOKEN_CHAR_CLOSE_PAREN) {
+        token.type = LC_TOKEN_CLOSE_PAREN;
     }
-    else if (c == '\\') {
-        result.type = LC_LAMBDA;
+    else if (c == LC_TOKEN_CHAR_LAMBDA) {
+        token.type = LC_TOKEN_LAMBDA;
     }
-    else if (c == '.') {
-        result.type = LC_DOT;
+    else if (c == LC_TOKEN_CHAR_DOT) {
+        token.type = LC_TOKEN_DOT;
     }
     else if (isalpha(c)) {
-        result.type = LC_VARIABLE;
-        result.data.variable = c;
+        token.type = LC_TOKEN_VARIABLE;
+        token.data.variable = c;
     }
     else if (isspace(c)) {
-        result.type = LC_IGNORE;
+        token.type = LC_TOKEN_IGNORE;
     }
     else {
-        result.type = LC_UNKNOWN;
+        token.type = LC_TOKEN_UNKNOWN;
     }
 
-    return result;
+    return token;
 }
+
+#define RETURN_ERROR_IF(_error_type, _condition) \
+    if (_condition) { \
+        struct lc_TokenizationError error; \
+        error.type = (_error_type); \
+        error.char_index = 0; \
+        return error; \
+    }
 
 struct lc_TokenizationError
 lc_Tokenize(const char *str, struct lc_TokenList *token_list_out)
 {
-    if (str == NULL) {
-        struct lc_TokenizationError error;
-        error.type = LC_TOKEN_INVALID_STRING;
-        error.char_index = 0;
-
-        return error;
-    }
-
-    if (strlen(str) == 0) {
-        struct lc_TokenizationError error;
-        error.type = LC_TOKEN_NO_ERROR;
-        error.char_index = 0;
-
-        return error;
-    }
+    RETURN_ERROR_IF(LC_TOKEN_INVALID_STRING, str == NULL);
+    RETURN_ERROR_IF(LC_TOKEN_NO_ERROR, strlen(str) == 0);
 
     assert(rg_List_GetSize(&token_list_out->list) == 0);
 
     for (int i = 0; i < strlen(str); ++i) {
         struct lc_Token token = _lc_TokenizeSingleCharacter(str[i]);
 
-        if (token.type == LC_UNKNOWN) {
+        if (token.type == LC_TOKEN_UNKNOWN) {
             struct lc_TokenizationError error;
 
             error.type = LC_TOKEN_INVALID_TOKEN;
@@ -95,7 +90,7 @@ lc_Tokenize(const char *str, struct lc_TokenList *token_list_out)
 
             return error;
         }
-        else if (token.type != LC_IGNORE) {
+        else if (token.type != LC_TOKEN_IGNORE) {
             rg_List_InsertEnd(&token_list_out->list, &token);
         }
     }
@@ -104,4 +99,6 @@ lc_Tokenize(const char *str, struct lc_TokenList *token_list_out)
     error.type = LC_TOKEN_NO_ERROR;
     return error;
 }
+
+#undef RETURN_ERROR_IF
 

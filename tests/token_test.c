@@ -47,7 +47,7 @@ TEST(onlyIdentifiesAlphabeticCharacterAsVariable, const char *string,
         struct lc_Token first_token = \
                 *(struct lc_Token *)rg_List_Get(&g_token_list.list, 0);
 
-        ASSERT_EQUAL_INT(LC_VARIABLE, first_token.type);
+        ASSERT_EQUAL_INT(LC_TOKEN_VARIABLE, first_token.type);
     }
     else {
         ASSERT_EQUAL_INT(LC_TOKEN_INVALID_TOKEN, error.type);
@@ -63,12 +63,12 @@ TEST(correctlyIdentifiesMoreThanOneToken)
 
     struct lc_Token tokens[N_CHARS];
     struct lc_Token expected_tokens[] = {
-        { .type = LC_OPEN_PAREN },
-        { .type = LC_LAMBDA },
-        { .type = LC_VARIABLE },
-        { .type = LC_DOT },
-        { .type = LC_VARIABLE },
-        { .type = LC_CLOSE_PAREN }
+        { .type = LC_TOKEN_OPEN_PAREN },
+        { .type = LC_TOKEN_LAMBDA },
+        { .type = LC_TOKEN_VARIABLE },
+        { .type = LC_TOKEN_DOT },
+        { .type = LC_TOKEN_VARIABLE },
+        { .type = LC_TOKEN_CLOSE_PAREN }
     };
 
     for (int i = 0; i < N_CHARS; ++i) {
@@ -123,11 +123,11 @@ int main(void)
 {
     RUN_TEST(returnsEmptyListForEmptyString);
 
-    RUN_TEST(correctlyIdentifiesSingleToken, LC_OPEN_PAREN, "(");
-    RUN_TEST(correctlyIdentifiesSingleToken, LC_CLOSE_PAREN, ")");
-    RUN_TEST(correctlyIdentifiesSingleToken, LC_LAMBDA, "\\");
-    RUN_TEST(correctlyIdentifiesSingleToken, LC_DOT, ".");
-    RUN_TEST(correctlyIdentifiesSingleToken, LC_VARIABLE, "a");
+    RUN_TEST(correctlyIdentifiesSingleToken, LC_TOKEN_OPEN_PAREN, "(");
+    RUN_TEST(correctlyIdentifiesSingleToken, LC_TOKEN_CLOSE_PAREN, ")");
+    RUN_TEST(correctlyIdentifiesSingleToken, LC_TOKEN_LAMBDA, "\\");
+    RUN_TEST(correctlyIdentifiesSingleToken, LC_TOKEN_DOT, ".");
+    RUN_TEST(correctlyIdentifiesSingleToken, LC_TOKEN_VARIABLE, "a");
 
     RUN_TEST(onlyIdentifiesAlphabeticCharacterAsVariable, "$", false);
     RUN_TEST(onlyIdentifiesAlphabeticCharacterAsVariable, "*", false);

@@ -1,19 +1,14 @@
 #ifndef LAMBDA_CALCULUS_H
 #define LAMBDA_CALCULUS_H
 
-#define LC_TOKEN_OPEN_PAREN     '('
-#define LC_TOKEN_CLOSE_PAREN    ')'
-#define LC_TOKEN_LAMBDA         '\\'
-#define LC_TOKEN_DOT            '.'
-
 enum lc_TokenType {
-    LC_OPEN_PAREN,
-    LC_CLOSE_PAREN,
-    LC_LAMBDA,
-    LC_VARIABLE,
-    LC_DOT,
-    LC_IGNORE,
-    LC_UNKNOWN
+    LC_TOKEN_OPEN_PAREN,
+    LC_TOKEN_CLOSE_PAREN,
+    LC_TOKEN_LAMBDA,
+    LC_TOKEN_VARIABLE,
+    LC_TOKEN_DOT,
+    LC_TOKEN_IGNORE,
+    LC_TOKEN_UNKNOWN
 };
 
 union lc_TokenData {
@@ -32,6 +27,10 @@ void                _lc_TokenList_Uninit(struct lc_TokenList *list);
 
 struct lc_TokenList*lc_TokenList_Create(void);
 void                lc_TokenList_Destroy(struct lc_TokenList *list);
+
+
+enum lc_TokenizationErrorType;
+struct lc_TokenizationError;
 
 enum lc_TokenizationErrorType {
     LC_TOKEN_NO_ERROR,
@@ -52,6 +51,8 @@ enum lc_TreeType {
     LC_TREE_ABSTRACTION,
     LC_TREE_APPLICATION
 };
+
+struct lc_Tree;
 
 struct lc_TreeAbstraction {
     char variable_name;
@@ -80,6 +81,9 @@ enum lc_LexerErrorType {
 };
 
 union lc_LexerErrorData {
+    /* This is a dummy member and should never be used; as soon as
+     * you put another member in this union, PLEASE DELETE THIS. */
+    char _;
 };
 
 struct lc_LexerError {
